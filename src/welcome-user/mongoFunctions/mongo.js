@@ -1,7 +1,7 @@
 const config = require(`../../config.js`);
 const MongoClient = require(`mongodb`).MongoClient;
 var DateDiff = require('date-diff');
-var mongo = require("../../globalMongo/mongo.js");
+var mongo = require("../../global/mongo.js");
 
 
 async function insertEmail(EMAIL, otpcode){

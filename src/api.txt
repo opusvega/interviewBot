@@ -1,0 +1,97 @@
+===============================================
+API Endpoints
+===============================================
+
+
+1) GET =>        /getCandidate/:eid 
+    eid is the Encrypted Email part of URL sent to User
+    Ex: if URL sent to Candidate = www.SomeOfficialLink.com/ABxy10Pf32hkj
+    Encrypted mail = ABxy10Pf32hkj;
+    You need to send this to Node sever using GET request
+
+    API => www.recruit.opusconsulting.com/getCandidate/ABxy10Pf32hkj
+    Response => 
+        IF all okay => `hi {name}`
+        ELSE => `URL has expired`
+    Proceed further accordingly
+
+
+2) GET =>       /getSkills
+    Ex: 
+    API =>   www.recruit.opusconsulting.com/getSkills?Sales_Cloud_Objective=5&Vf_Pages_Objective=5&Apex_Objective=5
+    //====================
+    Note: Category Names are stored like
+            "salescloud","apex","vfpages","reportdashboards"... in the Database 
+    //====================
+    Response = [
+        {
+        "qsubcat" : "salescloud",
+        "qtype" : "Objective",
+        "qtext" : "How many Big Deal alert can be activated for an opportunity?"                                                                                        ,
+        "options" : [
+                "5",
+                "10",
+                "1",
+                "None"
+                ],
+        "answer" : "1",
+        "marks" : 1,
+        "difficulty" : 0
+    },
+    {
+        "qsubcat" : "salescloud",
+        "qtype" : "Objective",
+        "qtext" : "Which field show the sales flow in Sales cloud?",
+        "options" : [
+                "Lead-Status",
+                "Opprtunity-Stage",
+                "None of these",
+                "None"
+                ],
+        "answer" : "Opprtunity-Stage",
+        "marks" : 1,
+        "difficulty" : 0
+    }
+]
+
+Add new field 'userAnswer' = {Whatever he said} in each object respectively
+
+3) POST      /getResult
+
+    API =>   www.recruit.opusconsulting.com/getResult
+    You have to send 2 Parameters in post request body
+    a) encrypted 'Email' as 
+    => email:'ABxy10Pf32hkj'
+    b) Array of Updated JSON as 
+    => qa:[
+        {
+            "qsubcat" : "salescloud",
+        "qtype" : "Objective",
+        "qtext" : "Which field show the sales flow in Sales cloud?",
+        "options" : [
+                "Lead-Status",
+                "Opprtunity-Stage",
+                "None of these",
+                "None"
+                ],
+        "answer" : "Opprtunity-Stage",
+        "marks" : 1,
+        "difficulty" : 0,
+        'userAnswer': 'Lead-Status' 
+        },
+        {
+        "qsubcat" : "salescloud",
+        "qtype" : "Objective",
+        "qtext" : "How many Big Deal alert can be activated for an opportunity?"                                                                                        ,
+        "options" : [
+                "5",
+                "10",
+                "1",
+                "None"
+                ],
+        "answer" : "1",
+        "marks" : 1,
+        "difficulty" : 0,
+        "userAnswer" : "1"
+        }
+    ] 

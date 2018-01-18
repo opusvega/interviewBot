@@ -14,8 +14,38 @@ let appRouter = function(app) {
     // 	res.send(PaymentType);
     // });
 
-    
 
+    app.get('/',function(req,res){
+        console.log('Inside=====GEt');
+        res.json('Hello World');
+    });
+    app.get('/getCandidate/:eid',async function(req,res){
+        console.log('Entering GET Candidate');
+        await apiTestFunctionController.getEmail(req,res);
+        console.log('Exiting GET Candidate');
+    });
+    // app.get('/getCandidate',async function(req,res){
+    //     console.log('Entering GET Candidate');
+    //     await apiTestFunctionController.getEmail(req,res);
+    //     console.log('Exiting GET Candidate');
+    // });
+    // app.get('/verifymail/:mail',function(req,res){
+    //     console.log('Entering GET Verify Mail');
+    //     await apiTestFunctionController.getVerifyMail(req,res);
+    //     console.log('Exiting GET Verify Mail');
+    // });
+    app.get('/getSkills',async function(req,res){
+        //receives skill set for candidate and generates random question bag accordingly
+        console.log('Entering GET SKills');
+        await apiTestFunctionController.getSkills(req,res);
+        console.log('Exiting GET SKills');
+    });
+
+    app.post('/getResult',async function(req,res){
+        console.log('Entering GET getResult');
+        await apiTestFunctionController.getResult(req,res);
+        console.log('Exiting GET getResult');
+    });
 
 
     app.post('/hook', async function(req, res) {

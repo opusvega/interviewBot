@@ -3,7 +3,7 @@ var wb = XLSX.readFile('../Salesforce.xlsx');
 var ws = wb.Sheets.Objective;
 var data = XLSX.utils.sheet_to_json(ws);
 console.log(data);  // excel file data
-const mongo = require("../globalMongo/mongo.js");
+const mongo = require("../global/mongo.js");
 var bulk = null;
 var total_questions = data.length;
 let count = 0;
@@ -34,12 +34,14 @@ async function bulkInsertLoop(count){
         if (data[i].hasOwnProperty('Option D')) {
             option.push(data[i]['Option D'])
         }
-    
+        let subcat = data[i]['Category'];
+        subcat = subcat.replace(/[^a-zA-Z]/g, '').toLowerCase();
+       // subcat = subcat.toLowerCase();
         bulk.insert( 
             { 
                 qid: i+1 , 
                 qcat: "salesforce",
-                qsubcat: data[i]['Category'] , 
+                qsubcat: subcat , 
                 qtype: data[i]['Question Category'] ,
                 qtext : data[i]['Questions'] , 
                 options: option,
