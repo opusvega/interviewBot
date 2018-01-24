@@ -52,14 +52,14 @@ async function getSkills(req,res){
         obj['Type'] = type;
         obj['Cat'] = cat.toLowerCase();
         obj['Value'] = questionObj[key];
-        console.log('QOBJ '+index+' =>'+obj);
+        //console.log('QOBJ '+index+' =>'+obj);
         console.log('QOBJ.type '+index+' =>'+obj.Type);
         console.log('QOBJ.cat '+index+' =>'+obj.Cat);
         console.log('QOBJ.value '+index+' =>'+obj.Value);
         questions.push(obj);
     });
     let questionSet = await Mongo.getQuestions(questions);
-    console.log(questionSet);
+    //console.log(questionSet);
     // return res.json(JSON.stringify(questionSet));
     return res.json(questionSet);
 }

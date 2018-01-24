@@ -1,5 +1,6 @@
 const mongo = require("../global/mongo.js");
 const encode = require('../global/encode.js');
+const mail = require('./mail');
 
 //assuming candidates record are stored in excel
 var XLSX = require('xlsx');
@@ -62,6 +63,7 @@ async function writeXlxs(){
 async function sendToHR(){
     await writeXlxs();
     //send this file to HR
+    mail.sendMail();
 }
 
 sendToHR();

@@ -30,53 +30,49 @@ async function getName(candidateEmail){
     }
 }
  
-let bulk = null;
 let questions =[];
 async function getQuestionsLoop(questionSet){
+    questions =[];
     let DB = await globalMongo.getdb();
     for(let i =0;i<questionSet.length;i++){
         let type = questionSet[i]['Type'];
         let cat = questionSet[i]['Cat'];
         let value = questionSet[i]['Value'];
-        console.log("TypeOf Value====>",typeof value);
         value = parseInt(value,10);
-        console.log("TypeOf Value====>",typeof value);
-        
-        console.log('Inside GetQuestion Loop Before Aggregate');
         //get (n=value) random documents matching criteria 
         let result = await DB.collection("QuestionBank").aggregate([
             { $match: { qsubcat: cat , qtype: type} },
             { $sample: { size: value } },
-            { $project: { _id:0 , qid :0, qcat:0} }
+            { $project: { _id:0 , qcat:0} }
         ],{
             allowDiskUse : true
-        }).toArray();
-        console.log('Inside GetQuestion Loop after Aggregate');        
+        }).toArray();        
         //result = JSON.stringify(result);
-        console.log(result);
+        //console.log(result);
         result.forEach(function(obj){
+            obj.userAnswer = '';
             questions.push(obj);
         });
     }
-    //return result;
 }
 async function getQuestions(questionSet){
     
     //questions = await getQuestionsLoop(questionSet);
     await getQuestionsLoop(questionSet);
-    console.log('question inside Mongo====>',questions);
+    //console.log('question inside Mongo====>',questions);
     return questions;
 }
-async function bulkInsertLoop(qa,email){
+async function bulkInsertLoop(qa,email,bulk){
     qa.forEach(function(qaObj){
         qaObj.email = email
         bulk.insert(qaObj);
     });
 }
 async function insertInterviewRecord(qa,email){
+    let bulk = null;
     let DB = await globalMongo.getdb();
     bulk = DB.collection("InterviewRecord").initializeUnorderedBulkOp();
-    await bulkInsertLoop(qa,email);
+    await bulkInsertLoop(qa,email,bulk);
     await bulk.execute();
 }
 // module.exports.randomQues = randomQues;
