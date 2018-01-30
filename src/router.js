@@ -4,6 +4,7 @@ console.log('Entering router.js...');
 const apiWelcomeUserFunctionController = require(`./welcome-user/api/userApiHandler.js`);
 const apiTestFunctionController = require('./test-init/api/testApihandler.js');
 let fs = require('fs');
+const chalk = require('chalk');
 
 
 let appRouter = function(app) {
@@ -16,13 +17,13 @@ let appRouter = function(app) {
 
 
     app.get('/',function(req,res){
-        console.log('Inside=====GEt');
+        console.log(chalk.green('Inside=====GEt'));
         res.json('Hello World');
     });
     app.get('/getCandidate/:eid',async function(req,res){
-        console.log('Entering GET Candidate');
+        console.log(chalk.green('Entering GET Candidate'));
         await apiTestFunctionController.getEmail(req,res);
-        console.log('Exiting GET Candidate');
+        console.log(chalk.green('Exiting GET Candidate'));
     });
     // app.get('/getCandidate',async function(req,res){
     //     console.log('Entering GET Candidate');
@@ -36,15 +37,15 @@ let appRouter = function(app) {
     // });
     app.get('/getSkills',async function(req,res){
         //receives skill set for candidate and generates random question bag accordingly
-        console.log('Entering GET SKills');
+        console.log(chalk.green('Entering GET SKills'));
         await apiTestFunctionController.getSkills(req,res);
-        console.log('Exiting GET SKills');
+        console.log(chalk.green('Exiting GET SKills'));
     });
 
     app.post('/getResult',async function(req,res){
-        console.log('Entering GET getResult');
+        console.log(chalk.green('Entering GET getResult'));
         await apiTestFunctionController.getResult(req,res);
-        console.log('Exiting GET getResult');
+        console.log(chalk.green('Exiting GET getResult'));
     });
 
 

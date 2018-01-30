@@ -3,6 +3,7 @@
 const CryptoJS = require('crypto-js');
 const config = require('../config.js')
 const secret = config.secret;
+const chalk = require('chalk');
 
 async function encryptEmail(email){
     let ciphertext = await CryptoJS.AES.encrypt(email,secret).toString();
@@ -15,7 +16,7 @@ async function decryptEmail(encryptedEmail){
     encryptedEmail = encryptedEmail.replace('_','/').replace('sulp','+');
     let bytes  = await CryptoJS.AES.decrypt(encryptedEmail.toString(), secret);
     let plaintext = bytes.toString(CryptoJS.enc.Utf8);     
-    console.log(plaintext);
+    console.log(chalk.blue(plaintext));
     return plaintext;
 }
 

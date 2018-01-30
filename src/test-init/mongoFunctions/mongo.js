@@ -1,5 +1,6 @@
 const config = require(`../../config.js`);
 const globalMongo = require('../../global/mongo');
+const chalk = require('chalk');
 
 
 // function randomQues(){
@@ -20,7 +21,7 @@ async function getName(candidateEmail){
         { $set: { urlstatus:'dead'} },
         {returnNewDocument:true}
     );
-    console.log("Find Candidate",result);
+    console.log(chalk.green("Find Candidate",result));
     if(result.value != null){ //result exists and hence urlstatus = dead(updated)
         console.log("result===>",result);
         return result.value.name;
@@ -33,27 +34,34 @@ async function getName(candidateEmail){
 let questions =[];
 async function getQuestionsLoop(questionSet){
     questions =[];
-    let DB = await globalMongo.getdb();
-    for(let i =0;i<questionSet.length;i++){
-        let type = questionSet[i]['Type'];
-        let cat = questionSet[i]['Cat'];
-        let value = questionSet[i]['Value'];
-        value = parseInt(value,10);
-        //get (n=value) random documents matching criteria 
-        let result = await DB.collection("QuestionBank").aggregate([
-            { $match: { qsubcat: cat , qtype: type} },
-            { $sample: { size: value } },
-            { $project: { _id:0 , qcat:0} }
-        ],{
-            allowDiskUse : true
-        }).toArray();        
-        //result = JSON.stringify(result);
-        //console.log(result);
-        result.forEach(function(obj){
-            obj.userAnswer = '';
-            questions.push(obj);
-        });
+    try{
+        let DB = await globalMongo.getdb();
+        for(let i =0;i<questionSet.length;i++){
+            let type = questionSet[i]['Type'];
+            let cat = questionSet[i]['Cat'];
+            let value = questionSet[i]['Value'];
+            value = parseInt(value,10);
+            //get (n=value) random documents matching criteria 
+            let result = await DB.collection("QuestionBank").aggregate([
+                { $match: { qsubcat: cat , qtype: type} },
+                { $sample: { size: value } },
+                { $project: { _id:0 , qcat:0} }
+            ],{
+                allowDiskUse : true
+            }).toArray();        
+            //result = JSON.stringify(result);
+            //console.log(result);
+            result.forEach(function(obj){
+                obj.userAnswer = '';
+                questions.push(obj);
+            });
+        }
+        console.log(chalk.cyan.bold(`result array length->`,questions.length));
     }
+    catch(e){
+        console.log(chalk.red(e));
+    }
+ 
 }
 async function getQuestions(questionSet){
     
