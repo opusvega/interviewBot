@@ -10,7 +10,7 @@ const chalk = require('chalk');
 let appRouter = function(app) {
  
     app.get('/',function(req,res){
-        console.log(chalk.green('Inside=====GEt'));
+        console.log(chalk.green('Inside /'));
         //console.log(chalk.green(req.ip));
         res.json('Hello World');
     });
@@ -27,9 +27,9 @@ let appRouter = function(app) {
     });
 
     app.post('/getResult',async function(req,res){
-        console.log(chalk.green('Entering GET getResult'));
+        console.log(chalk.green('Entering POST getResult'));
         await apiTestFunctionController.getResult(req,res);
-        console.log(chalk.green('Exiting GET getResult'));
+        console.log(chalk.green('Exiting POST getResult'));
     });  
 }
 

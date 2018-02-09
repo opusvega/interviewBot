@@ -21,7 +21,7 @@ async function getEmail(req,res){
     let email = await encode.decryptEmail(eid); //plaintext email
     console.log(chalk.yellow("email===>",email));
     let name = await Mongo.getName(email);
-    console.log(chalk.yellow("name in GEtMeail====>",name));
+    console.log(chalk.yellow("name in GetMail====>",name));
     if(name != false){
         let returnJsonObj = stub.getEmail(name);
         JSON.stringify(returnJsonObj);
@@ -35,13 +35,6 @@ async function getEmail(req,res){
         return res.json(returnJsonObj);
         }
 }
-
-// async function getVerifyMail(req,res){
-//     console.log('Entering getVerifyMail');
-//     let mail = req.params.mail;
-//     //generate otp and send it to salesforce
-//     console.log('Exiting getVerifyMail');
-// }
 
 async function getSkills(req,res){
     let questionObj = req.query; // object {"Sales_cloud_Objective":5,"Apex_Subjective":5,"VF_Pages_Objective":5}
@@ -57,11 +50,8 @@ async function getSkills(req,res){
         obj['Cat'] = cat.toLowerCase();
         obj['Value'] = parseInt(questionObj[key],10);
         //console.log('QOBJ '+index+' =>'+obj);
-        console.log(chalk.yellow('QOBJ.type '+index+' =>'+obj.Type));
-        console.log(chalk.yellow('QOBJ.cat '+index+' =>'+obj.Cat));
-        console.log(chalk.yellow('QOBJ.value '+index+' =>'+obj.Value));
         if(isNaN(obj.Value)){
-            console.log(chalk.red(`IN Skills Error IF===>`));
+            console.log(chalk.red(` Error in Fetching Skills `));
             res.status(500).json({ error: 'something blew up' });  // error
             flag = false;
             return;
@@ -81,14 +71,19 @@ async function getSkills(req,res){
 }
 
 let num_correct =0;
-let score = 0;
+let score;
 
 function checkScore(qa){
+    score = 0;
     for(let i=0;i<qa.length;i++){
         //check Objective Questions
-        if((qa[i]['qtype'] == 'Objective') && (qa[i]['answer'] == qa[i]['userAnswer'])){
+        if((qa[i]['qtype'] == 'objective') && (qa[i]['answer'] == qa[i]['userAnswer'])){
             num_correct++;
             score = score + qa[i]['marks'];
+            qa[i]['score'] = qa[i]['marks'];
+        }
+        else{
+            qa[i]['score'] = 0;
         }
         //check Subjective Questions
         //Insert Each qa record in new collection
@@ -98,10 +93,9 @@ async function getResult(req,res){
     let qa = req.body.qa; //qa is array of all question & answer JSON
     let enc_email = req.body.email; // encrypted email 
     let email = await encode.decryptEmail(enc_email); //plaintext email
-   
-    Mongo.insertInterviewRecord(qa,email);
     await checkScore(qa);
-    return res.json(score);
+    Mongo.insertInterviewRecord(qa,email);
+    return res.json({"score" :score,"total_questions" : qa.length  , "total_correct": num_correct });
 }
 
 
